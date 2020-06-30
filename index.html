@@ -1,0 +1,106 @@
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Simple co-browse with chat/cobrowse reconnect example</title>
+</head>
+<body>
+
+    <h1>Co-browse page 2</h1>
+    <a href="https://gc-cc-playground.github.io/index.html">Back to start page</a>
+    <div id="chatContainer" style="height:600px"></div>
+
+    <script id="purecloud-webchat-js" type="text/javascript" src="https://apps.mypurecloud.com/webchat/jsapi-v1.js" region="us-east-1" org-guid="cc329c9f-a78c-4788-8808-6fdf739234f7" deployment-key="da0ba755-efcc-4e93-958a-fea3dea65fb2"></script>
+
+    <script type="text/javascript">
+    let genesysWebchat = (function() {
+        window.PURECLOUD_WEBCHAT_FRAME_CONFIG = {
+          containerEl: 'chatContainer'
+        };
+        function createChatConfig(){
+            // For additional web chat config options, see web chat documentation. This example excludes some of the optional values.
+            return {
+                // Web chat application URL
+                "webchatAppUrl": "https://apps.mypurecloud.com/webchat",
+
+                // Web chat service URL
+                "webchatServiceUrl": "https://realtime.mypurecloud.com:443",
+
+                // Numeric organization ID <INSERT_YOUR_ORGID_HERE>
+                "orgId": 12570,
+
+                // Organization name
+                "orgName": "pcps",
+
+                "queueName": "Steeve Test Queue 1",
+
+                // Log level
+                "logLevel": "DEBUG",
+
+                // Locale code
+                "locale": "en",
+                // Logo used at the top of the chat window
+                "companyLogo": {
+                    "width": 600,
+                    "height": 149,
+                    "url": "https://dhqbrvplips7x.cloudfront.net/webchat/1.0.23/company-logo-large-cea5ee47.png"
+                },
+
+                // Logo used within the chat window
+                "companyLogoSmall": {
+                    "width": 149,
+                    "height": 149,
+                    "url": "https://dhqbrvplips7x.cloudfront.net/webchat/1.0.23/company-logo-small-9c9fe09b.png"
+                },
+
+                // Image used for agent
+                "agentAvatar": {
+                    "width": 462,
+                    "height": 462,
+                    "url": "https://dhqbrvplips7x.cloudfront.net/webchat/1.0.23/agent-e202505f.png"
+                },
+
+                // Text displayed when the chat window opens
+                "welcomeMessage": "Thanks for chatting.",
+
+                // CSS class applied to the chat window
+                "cssClass": "webchat-frame",
+
+                "reconnectEnabled": true,
+
+                //Allowed reconnect origins
+                "reconnectOrigins": [
+                    "https://gc-cc-playground.github.io",
+                    "https://spastorelli-genesys.github.io"
+                ],
+
+
+                // Custom style applied to the chat window
+                "css": {
+                    "width": "100%",
+                    "height": "100%"
+                },
+
+                // Deployment key for your cobrowse deployment from PureCloud admin UI
+                "cobrowseConfig": {
+                    "deploymentKey": "J2KTylSDrp5iAmtFIc1SLsoNxqoE728P",
+                }
+            };
+        }
+        return {
+            startEmbeddedChat: function() {
+                let chatConfig = createChatConfig();
+                ININ.webchat.create(chatConfig, function(err, webchat) {
+                    if (err) {
+                          console.error('Unable to share page', (err.stack || err));
+                          return;
+                      }
+                    webchat.renderFrame({
+                        containerEl: 'chatContainer'
+                    });
+                });
+            }
+        }
+    })();
+    </script>
+    <script>genesysWebchat.startEmbeddedChat()</script>
+    </body>
+</html>
