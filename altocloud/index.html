@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Test Altocloud deployment</title>
+    <link rel="stylesheet" href="css/bulma.min.css" />
+    <style>
+      table th {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <script
+      src="https://apps.mypurecloud.com/widgets/9.0/cxbus.min.js"
+      onload="javascript:CXBus.configure({debug:false,pluginsPath:'https://apps.mypurecloud.com/widgets/9.0/plugins/'}); CXBus.loadPlugin('widgets-core');"
+    ></script>
+
+    <script>
+      const PURECLOUD_WIDGET_DEPLOYMENT_KEY =
+        "9a9858d5-9684-4134-94d2-dd225afe6a66";
+      const PURECLOUD_ORG_GUID = "cc329c9f-a78c-4788-8808-6fdf739234f7";
+
+      const GUEST_CHAT_API = "https://api.mypurecloud.com/api/v2/webchat/guest";
+
+      window._genesys = {
+        widgets: {
+          webchat: {
+            transport: {
+              type: "purecloud-v2-sockets",
+              dataURL: "https://api.mypurecloud.com",
+              deploymentKey: PURECLOUD_WIDGET_DEPLOYMENT_KEY,
+              orgGuid: PURECLOUD_ORG_GUID,
+              interactionData: {
+                routing: {
+                  targetType: "QUEUE",
+                  targetAddress: "Steeve Test Queue 1",
+                  priority: 2,
+                },
+              },
+            },
+          },
+        },
+      };
+
+      function getAdvancedConfig() {
+        return {
+          form: {
+            autoSubmit: false,
+            firstname: "",
+            lastname: "",
+            email: "",
+            subject: "",
+          },
+          markdown: true,
+          formJSON: {
+            wrapper: "<table></table>",
+            inputs: [
+              {
+                id: "cx_webchat_form_firstname",
+                name: "firstname",
+                maxlength: "100",
+                placeholder: "Required",
+                label: "First Name",
+              },
+              {
+                id: "cx_webchat_form_lastname",
+                name: "lastname",
+                maxlength: "100",
+                placeholder: "Required",
+                label: "Last Name",
+              },
+              {
+                id: "cx_webchat_form_email",
+                name: "email",
+                maxlength: "100",
+                placeholder: "Required",
+                label: "Email",
+              },
+              {
+                id: "cx_webchat_form_phonenumber",
+                name: "phonenumber",
+                maxlength: "100",
+                placeholder: "Optional",
+                label: "Phone Number",
+              },
+            ],
+          },
+        };
+      }
+
+      const customPlugin = CXBus.registerPlugin("Custom");
+
+      customPlugin.subscribe("WebChatService.started", function (evt) {
+        console.log("Chat started", evt);
+      });
+
+      customPlugin.subscribe("WebChatService.ended", function (evt) {
+        console.log("Chat ended", evt);
+      });
+    </script>
+    <section class="section">
+      <div class="container">
+        <h1>Test Altocloud Deployment</h1>
+        <button id="chatButton" class="button is-primary">Start Chat</button>
+      </div>
+    </section>
+
+    <script>
+      const chatButton = document.querySelector("#chatButton");
+      chatButton.addEventListener("click", function () {
+        customPlugin.command("WebChat.open", getAdvancedConfig());
+      });
+    </script>
+
+    <script>
+      (function (a, t, c, l, o, u, d) {
+        a["_genesysJourneySdk"] = o;
+        (a[o] =
+          a[o] ||
+          function () {
+            (a[o].q = a[o].q || []).push(arguments);
+          }),
+          (a[o].l = 1 * new Date());
+        (u = t.createElement(c)), (d = t.getElementsByTagName(c)[0]);
+        u.async = 1;
+        u.src = l;
+        u.charset = "utf-8";
+        d.parentNode.insertBefore(u, d);
+      })(
+        window,
+        document,
+        "script",
+        "https://apps.mypurecloud.com/journey/sdk/js/web/v1/ac.js",
+        "ac"
+      );
+      ac("init", "cc329c9f-a78c-4788-8808-6fdf739234f7", { region: "use1" });
+      ac("pageview");
+    </script>
+  </body>
+</html>
