@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simple Example of Guest API</title>
+    <link rel="stylesheet" href="css/bulma.min.css" />
+    <script src="js/third-party-chat.js"></script>
+    <style>
+      /* .columns {
+        height: 80vh;
+      } */
+      .chat-widget-controls {
+        padding: 1rem 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero is-fullheight">
+      <div class="hero-head">
+        <div class="section has-text-centered">
+          <h1 class="title">
+            Guest API with third party widget example
+          </h1>
+        </div>
+      </div>
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">Organization ID</label>
+                <div class="control">
+                  <input
+                    id="organizationId"
+                    class="input"
+                    type="text"
+                    placeholder="e.g cc329c9f-a78c-4788-8808-6fdf739234f7"
+                  />
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Deployment ID</label>
+                <div class="control">
+                  <input
+                    id="deploymentId"
+                    class="input"
+                    type="text"
+                    placeholder="e.g 5b739415-a52e-401b-8170-816973203e52"
+                  />
+                </div>
+              </div>
+
+              <div class="field">
+                <div class="control">
+                  <button id="setupWidget" class="button is-link">
+                    Setup Widget
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="widgetContainer" class="column has-background-white-ter">
+              <template id="chatWidgetTemplate">
+                <div id="chatWidget" class="card">
+                  <header
+                    id="chatWidgetHeader"
+                    class="card-header has-background-primary"
+                  >
+                    <p class="card-header-title has-text-white">
+                      Live Chat
+                    </p>
+                  </header>
+                  <div id="chatWidgetContent" class="card-content"></div>
+                  <footer id="chatWidgetFooter" class="card-footer"></footer>
+                </div>
+              </template>
+
+              <!-- Chat Widget Content Templates-->
+              <template id="chatFormTemplate">
+                <div id="chatForm">
+                  <div class="field">
+                    <label class="label">First Name</label>
+                    <div class="control">
+                      <input
+                        id="firstName"
+                        class="input"
+                        type="text"
+                        placeholder="e.g Alex"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label class="label">Last Name</label>
+                    <div class="control">
+                      <input
+                        id="lastName"
+                        class="input"
+                        type="text"
+                        placeholder="e.g Smith"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                      <input
+                        id="email"
+                        class="input"
+                        type="email"
+                        placeholder="e.g. alexsmith@gmail.com"
+                      />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <template id="chatIncomingMessage">
+                <article class="media">
+                  <figure class="media-left">
+                    <p class="image is-64x64">
+                      <img
+                        src="https://bulma.io/images/placeholders/128x128.png"
+                      />
+                    </p>
+                  </figure>
+                  <div class="media-content">
+                    <div class="notification is-success is-light">
+                      Primar lorem ipsum dolor sit amet, consectetur adipiscing
+                      elit lorem ipsum dolor.
+                    </div>
+                  </div>
+                </article>
+              </template>
+
+              <template id="chatOutcomingMessage">
+                <article class="media">
+                  <div class="media-content">
+                    <div class="notification is-success is-light">
+                      Primar lorem ipsum dolor sit amet, consectetur adipiscing
+                      elit lorem ipsum dolor.
+                      <strong>Pellentesque risus mi</strong>, tempus quis
+                      placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit
+                      amet fringilla. Nullam gravida purus diam, et dictum
+                    </div>
+                  </div>
+                  <figure class="media-right">
+                    <p class="image is-64x64">
+                      <img
+                        src="https://bulma.io/images/placeholders/128x128.png"
+                      />
+                    </p>
+                  </figure>
+                </article>
+              </template>
+              <!-- End -->
+
+              <!-- Chat Widget Footer Templates -->
+              <template id="chatFormControls">
+                <a id="cancelChat" href="#" class="card-footer-item">
+                  Cancel
+                </a>
+                <a
+                  id="startChat"
+                  href="#"
+                  class="card-footer-item has-background-primary has-text-white"
+                >
+                  Start Chat
+                </a>
+              </template>
+
+              <template id="chatConvControls">
+                <div class="container section chat-widget-controls">
+                  <div class="columns is-vcentered is-1">
+                    <div class="column">
+                      <div class="field">
+                        <div class="control">
+                          <textarea
+                            class="textarea"
+                            placeholder="e.g. Hello world"
+                          ></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                      <div class="field">
+                        <div class="control">
+                          <button class="button is-primary is-fullwidth">
+                            Send
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <!-- End -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const setupWidgetButton = document.querySelector("#setupWidget");
+      setupWidgetButton.addEventListener("click", () => {
+        /* const organizationId = "cc329c9f-a78c-4788-8808-6fdf739234f7";
+        const thirdPartyDeploymentId = "5b739415-a52e-401b-8170-816973203e52"; */
+
+        const organizationId = document.querySelector("#organizationId").value;
+        const deploymentId = document.querySelector("#deploymentId").value;
+
+        if (organizationId && deploymentId) {
+          const webChatService = new WebChatService(
+            organizationId,
+            deploymentId
+          );
+          const webChatWidget = new WebChatWidget(webChatService);
+          webChatWidget.render("widgetContainer");
+        }
+      });
+    </script>
+  </body>
+</html>
